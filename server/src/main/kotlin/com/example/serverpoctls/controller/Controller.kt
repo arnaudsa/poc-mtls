@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/nt-ms")
+@RequestMapping("/cora")
 class Controller {
 
     @GetMapping("/clients")
@@ -18,10 +18,10 @@ class Controller {
         ).also { println("Executado com sucesso") }
     }
 
-    @GetMapping("/data")
-    fun getData(): String {
-        println("Returning data from nt-ms data method")
-        return "Hello from NT-MS-data method"
+    @GetMapping("/health")
+    fun getHealth(): String {
+        println("Cora está funcionando")
+        return "Pong"
     }
 
 }

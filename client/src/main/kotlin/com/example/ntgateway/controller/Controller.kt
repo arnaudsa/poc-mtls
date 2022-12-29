@@ -9,24 +9,24 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
 
 @RestController
-@RequestMapping("nt-gateway")
+@RequestMapping("/serasa")
 class Controller(
     val restTemplate: RestTemplate,
     val env: Environment
 ) {
 
-    @GetMapping("/data")
+    @GetMapping("/health")
     fun getData(): String {
-        println("Returning data from nt-gateway own data method")
-        return "Hello from NT-GATEWAY-data method"
+        println("Serasa está funcionando")
+        return "Pong"
     }
 
     @GetMapping("/ms-data")
     fun getMsData(): Client? {
-        println("Got inside NT-GATEWAY-ms-data method")
+        println("Consultando os dados de clientes na Cora")
 
-        val endpoint = env.get("endpoint.ms-service") ?: throw IllegalArgumentException("Endpoint não configurado.")
-        println("MS Endpoint name: [ $endpoint ]")
+        val endpoint = env.get("endpoint.cora-service") ?: throw IllegalArgumentException("Endpoint não configurado.")
+        println("Cora endpoint: [ $endpoint ]")
 
         return run {
             restTemplate.getForEntity(URI(endpoint), Client::class.java).body
