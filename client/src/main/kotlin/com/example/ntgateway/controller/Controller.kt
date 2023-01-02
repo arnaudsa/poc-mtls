@@ -1,6 +1,8 @@
 package com.example.ntgateway.controller
 
 import java.net.URI
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.springframework.core.env.Environment
 import org.springframework.core.env.get
 import org.springframework.web.bind.annotation.GetMapping
@@ -12,6 +14,7 @@ import org.springframework.web.client.RestTemplate
 @RequestMapping("/serasa")
 class Controller(
     val restTemplate: RestTemplate,
+    val okHttpClient: OkHttpClient,
     val env: Environment
 ) {
 
@@ -23,10 +26,15 @@ class Controller(
 
     @GetMapping("/ms-data")
     fun getMsData(): Client? {
-        println("Consultando os dados de clientes na Cora")
+        val endpoint = env["endpoint.cora-service"] ?: throw IllegalArgumentException("Endpoint não configurado.")
+        println("Consultando os dados de clientes na Cora Get: $endpoint")
 
-        val endpoint = env.get("endpoint.cora-service") ?: throw IllegalArgumentException("Endpoint não configurado.")
-        println("Cora endpoint: [ $endpoint ]")
+        val response = okHttpClient.newCall(Request.Builder().url(endpoint).build())
+            .execute()
+
+        val responseBody = response.body?.byteString()?.utf8()
+        println(responseBody)
+
 
         return run {
             restTemplate.getForEntity(URI(endpoint), Client::class.java).body
